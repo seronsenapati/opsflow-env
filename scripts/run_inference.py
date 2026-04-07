@@ -34,14 +34,14 @@ def format_prompt(obs):
     elif obs.task_type == "driver_assignment":
         schema = '{"assigned_orders": 2, "urgent_handled": true}'
 
-    return f\"\"\"
+    return f"""
     Task: {obs.task_type}
     Data: {obs.data}
 
     You must return ONLY a JSON response without any markdown, reasoning, or additional text.
     The JSON structure MUST exactly match this format:
     {schema}
-    \"\"\"
+    """
 
 def run():
     print("START")
@@ -62,13 +62,13 @@ def run():
         try:
             # Clean possible markdown formatting
             clean_out = llm_output.strip()
-            if clean_out.startswith("\\\json"):
+            if clean_out.startswith("```json"):
                 clean_out = clean_out[7:].strip()
-                if clean_out.endswith("\\\"):
+                if clean_out.endswith("```"):
                     clean_out = clean_out[:-3].strip()
-            elif clean_out.startswith("\\\"):
+            elif clean_out.startswith("```"):
                 clean_out = clean_out[3:].strip()
-                if clean_out.endswith("\\\"):
+                if clean_out.endswith("```"):
                     clean_out = clean_out[:-3].strip()
             
             parsed_decision = json.loads(clean_out)
