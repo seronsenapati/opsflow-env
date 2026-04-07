@@ -86,11 +86,23 @@ def run():
 
     print(f"END: total_score={total_score}")
     
-    # Hugging Face Spaces expect a continuous process.
-    # Sleep forever so it doesn't immediately exit and trigger a "runtime error".
-    print("Simulation complete. Idling to keep Hugging Face Space active...")
-    while True:
-        time.sleep(3600)
+    # Hugging Face Spaces require a web server listening on port 7860 to pass the health check.
+    print("Simulation complete. Starting dummy server on port 7860 to keep Hugging Face Space active...")
+    import http.server
+    import socketserver
+    
+    class DummyHandler(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200)
+            self.send_header('Content-type', 'text/plain')
+            self.end_headers()
+            self.wfile.write(f"OpsFlow Simulation Complete!\nFinal Score: {total_score}".encode('utf-8'))
+            
+        def log_message(self, format, *args):
+            pass # Suppress HTTP logging to keep the logs clean
+            
+    with socketserver.TCPServer(("", 7860), DummyHandler) as httpd:
+        httpd.serve_forever()
 
 if __name__ == "__main__":
     run()
