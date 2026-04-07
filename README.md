@@ -53,7 +53,7 @@ Python, Pydantic, OpenEnv compliant
 
 ▶️ How to Run
 pip install -r requirements.txt
-python scripts/run_inference.py
+python inference.py
 
 🐳 Docker Setup
 docker build -t opsflow .
