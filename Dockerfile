@@ -5,4 +5,6 @@ COPY . .
 
 RUN pip install -r requirements.txt
 
+ENV PYTHONPATH="/app"
+
 CMD ["python", "scripts/run_inference.py"]
